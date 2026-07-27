@@ -40,6 +40,7 @@ export function ProtectedRoute() {
           <SidebarLink to="/courses" icon="📖" label="Course Registration" />
           <SidebarLink to="/hostels" icon="🏠" label="Hostel Space" />
           <SidebarLink to="/results" icon="🎓" label="My Results" />
+          <SidebarLink to="/profile" icon="👤" label="My Profile & Security" />
         </nav>
 
         <div style={{ borderTop: '1px solid var(--border-default)', paddingTop: 16 }}>

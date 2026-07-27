@@ -8,6 +8,7 @@ import Payments from './pages/Payments';
 import Courses from './pages/Courses';
 import Hostels from './pages/Hostels';
 import Results from './pages/Results';
+import ProfilePage from './pages/ProfilePage';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/courses" element={<Courses />} />
             <Route path="/hostels" element={<Hostels />} />
             <Route path="/results" element={<Results />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           {/* Fallbacks */}
