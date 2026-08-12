@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/client';
+import { LockIcon, FileIcon } from '../components/Icons';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'security' | 'biodata'>('security');
@@ -163,7 +164,7 @@ export default function ProfilePage() {
             cursor: 'pointer'
           }}
         >
-          🔐 Security & Password
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><LockIcon size={16} /> Security & Password</span>
         </button>
         <button
           onClick={() => setActiveTab('biodata')}
@@ -178,7 +179,7 @@ export default function ProfilePage() {
             cursor: 'pointer'
           }}
         >
-          📄 Request Biodata Change
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><FileIcon size={16} /> Request Biodata Change</span>
         </button>
       </div>
 

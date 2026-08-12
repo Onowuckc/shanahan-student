@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api/client';
+import { PaymentsIcon, AlertIcon, CheckIcon } from '../components/Icons';
 
 interface FeeItem {
   id: string;
@@ -139,6 +140,15 @@ export default function Payments() {
     }
   };
 
+  const handleGatewayProceed = () => {
+    if (!authUrl) return;
+    if (authUrl.includes('SU_MOCK_') || !authUrl.includes('checkout.paystack.com')) {
+      handleSimulateVerify();
+    } else {
+      window.location.href = authUrl;
+    }
+  };
+
   return (
     <div className="animate-fade">
       <div className="page-header">
@@ -156,7 +166,7 @@ export default function Payments() {
           </div>
         ) : payments.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">💳</div>
+            <div className="empty-state-icon"><PaymentsIcon size={48} color="#800020" /></div>
             <div className="empty-state-title">No invoices found</div>
             <div className="empty-state-desc">You currently have no fee allocations assigned.</div>
           </div>
@@ -207,7 +217,7 @@ export default function Payments() {
                           Pay Now
                         </button>
                       ) : (
-                        <span className="badge badge-success">✓ Fully Cleared</span>
+                        <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><CheckIcon size={12} /> Fully Cleared</span>
                       )}
                     </td>
                   </tr>
@@ -224,18 +234,22 @@ export default function Payments() {
           <div className="modal">
             <div className="modal-header">
               <h3 className="modal-title">Fee Checkout</h3>
-              <button className="modal-close" onClick={() => setShowPayModal(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowPayModal(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: '50%', background: 'rgba(74,14,23,0.08)', border: 'none', cursor: 'pointer' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
             </div>
             <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {errorMsg && (
-                <div style={{ padding: 12, background: 'rgba(239,68,68,0.1)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-500)', fontSize: 13, textAlign: 'center' }}>
-                  ⚠️ {errorMsg}
+                <div style={{ padding: 12, background: 'rgba(239,68,68,0.1)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-500)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <AlertIcon size={16} color="var(--danger-500)" />
+                  <span>{errorMsg}</span>
                 </div>
               )}
 
               {successMsg && (
-                <div style={{ padding: 12, background: 'rgba(34,197,94,0.1)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-500)', fontSize: 13, textAlign: 'center' }}>
-                  🎉 {successMsg}
+                <div style={{ padding: 12, background: 'rgba(34,197,94,0.1)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-500)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <CheckIcon size={16} color="var(--success-500)" />
+                  <span>{successMsg}</span>
                 </div>
               )}
 
@@ -265,8 +279,9 @@ export default function Payments() {
                       required
                     />
                     {selectedPayment.amountPaid === 0 && (
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                        💡 Installment Allowed: Minimum first payment must be at least 50% (₦{(selectedPayment.amountDue * 0.5).toLocaleString()})
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+                        <AlertIcon size={13} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: 1 }} />
+                        <span>Installment Allowed: Minimum first payment must be at least 50% (₦{(selectedPayment.amountDue * 0.5).toLocaleString()})</span>
                       </span>
                     )}
                   </div>
@@ -276,7 +291,7 @@ export default function Payments() {
                   </button>
                 </form>
               ) : (
-                /* Stage 2: Simulating Checkout */
+                /* Stage 2: Checkout Action */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center', textAlign: 'center', padding: '12px 0' }}>
                   <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                     Transaction reference generated:<br />
@@ -285,27 +300,29 @@ export default function Payments() {
 
                   <div className="divider" style={{ width: '100%', margin: '12px 0' }} />
 
-                  {/* Option 1: Live Checkout Redirect */}
-                  <a
-                    href={authUrl}
-                    target="_blank"
-                    rel="noreferrer"
+                  {/* Option 1: Gateway Checkout */}
+                  <button
+                    type="button"
+                    onClick={handleGatewayProceed}
                     className="btn btn-gold"
-                    style={{ width: '100%', textDecoration: 'none', justifyContent: 'center' }}
+                    style={{ width: '100%', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: 8, color: '#4A0E17' }}
+                    disabled={verifying}
                   >
-                    💳 Go to Paystack Gateway Checkout
-                  </a>
+                    <PaymentsIcon size={18} />
+                    <span>Pay via Paystack Gateway</span>
+                  </button>
 
                   <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>- OR -</div>
 
                   {/* Option 2: Mock simulator for offline/test environments */}
                   <button
                     className="btn btn-primary"
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                     onClick={handleSimulateVerify}
                     disabled={verifying}
                   >
-                    🚀 Simulate Successful Test Payment (Recommended)
+                    <CheckIcon size={18} />
+                    <span>Instant Test Simulation</span>
                   </button>
                 </div>
               )}

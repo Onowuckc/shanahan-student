@@ -1,5 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/client';
+import {
+  BuildingIcon,
+  HostelsIcon,
+  PaymentsIcon,
+  CheckIcon,
+  ClockIcon,
+  CrossIcon,
+  AlertIcon
+} from '../components/Icons';
 
 interface Hostel {
   id: string;
@@ -75,24 +84,32 @@ export default function Hostels() {
       </div>
 
       {errorMsg && (
-        <div style={{ padding: 14, background: 'rgba(239,68,68,0.08)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-400)', fontSize: 13, marginBottom: 20 }}>
-          ⚠️ {errorMsg}
+        <div style={{ padding: 14, background: 'rgba(239,68,68,0.08)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-500)', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <AlertIcon size={18} color="var(--danger-500)" />
+          <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div style={{ padding: 14, background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-400)', fontSize: 13, marginBottom: 20 }}>
-          🎉 {successMsg}
+        <div style={{ padding: 14, background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-500)', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <CheckIcon size={18} color="var(--success-500)" />
+          <span>{successMsg}</span>
         </div>
       )}
 
       {hostelStatus !== 'NONE' ? (
         /* Render Requested Status */
         <div className="section-card" style={{ textAlign: 'center', padding: '40px 24px' }}>
-          <div style={{ fontSize: 54, marginBottom: 16 }}>
-            {hostelStatus === 'APPROVED' ? '🏠' : hostelStatus === 'PENDING' ? '⏳' : '❌'}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+            {hostelStatus === 'APPROVED' ? (
+              <HostelsIcon size={48} color="var(--success-500)" />
+            ) : hostelStatus === 'PENDING' ? (
+              <ClockIcon size={48} color="var(--warning-500)" />
+            ) : (
+              <CrossIcon size={48} color="var(--danger-500)" />
+            )}
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: '#4A0E17' }}>
             {hostelStatus === 'APPROVED' 
               ? `Confirmed Bed Allocation!`
               : hostelStatus === 'PENDING' 
@@ -111,9 +128,10 @@ export default function Hostels() {
             <button
               onClick={() => window.location.href = '/payments'}
               className="btn btn-primary"
-              style={{ margin: '0 auto' }}
+              style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              💳 Go to Payments Page
+              <PaymentsIcon size={18} />
+              <span>Go to Payments Page</span>
             </button>
           )}
         </div>
@@ -122,7 +140,7 @@ export default function Hostels() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
           {hostels.length === 0 ? (
             <div className="empty-state" style={{ gridColumn: 'span 3' }}>
-              <div className="empty-state-icon">🏨</div>
+              <div className="empty-state-icon"><BuildingIcon size={48} color="#800020" /></div>
               <div className="empty-state-title">No hostels available</div>
               <div className="empty-state-desc">There are no vacant residential blocks configured for your gender.</div>
             </div>
@@ -134,7 +152,9 @@ export default function Hostels() {
               return (
                 <div key={hostel.id} className="glass-card" style={{ padding: '24px 28px', border: '1px solid var(--border-default)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                    <div style={{ fontSize: 28 }}>🏨</div>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(128,0,32,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <BuildingIcon size={24} color="#800020" />
+                    </div>
                     <span className={`badge badge-${hostel.gender === 'MALE' ? 'info' : hostel.gender === 'FEMALE' ? 'danger' : 'warning'}`}>
                       {hostel.gender === 'MALE' ? 'Male Block' : hostel.gender === 'FEMALE' ? 'Female Block' : 'Mixed Block'}
                     </span>

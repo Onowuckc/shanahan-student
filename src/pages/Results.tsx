@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
+import { AlertIcon, PrinterIcon, CoursesIcon } from '../components/Icons';
 
 interface CourseDetail {
   id: string;
@@ -76,7 +77,7 @@ export default function Results() {
   if (error) {
     return (
       <div className="empty-state">
-        <div className="empty-state-icon">⚠️</div>
+        <div className="empty-state-icon"><AlertIcon size={48} color="var(--warning-500)" /></div>
         <div className="empty-state-title">Error Loading Results</div>
         <div className="empty-state-desc">{error}</div>
       </div>
@@ -197,8 +198,8 @@ export default function Results() {
         </div>
         <div>
           {filteredCourses.length > 0 && (
-            <button className="btn btn-primary" onClick={handlePrint}>
-              🖨️ Print Result Slip
+            <button className="btn btn-primary" onClick={handlePrint} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <PrinterIcon size={16} /> Print Result Slip
             </button>
           )}
         </div>
@@ -279,7 +280,7 @@ export default function Results() {
 
         {filteredCourses.length === 0 ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>📖</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><CoursesIcon size={36} color="var(--text-muted)" /></div>
             <div>No approved course registration records for the selected period.</div>
           </div>
         ) : (

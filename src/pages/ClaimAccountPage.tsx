@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/client';
+import { LockIcon, AlertIcon, CheckIcon, ArrowLeftIcon } from '../components/Icons';
 
 export default function ClaimAccountPage() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function ClaimAccountPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <div className="login-logo">🔒</div>
+          <div className="login-logo"><LockIcon size={24} color="var(--accent-400)" /></div>
           <h2 className="login-title">Account Claiming</h2>
           <p className="login-subtitle">Activate your legacy or pre-seeded portal profile</p>
         </div>
@@ -99,9 +100,12 @@ export default function ClaimAccountPage() {
             color: 'var(--danger-500)',
             fontSize: 13,
             marginBottom: 20,
-            textAlign: 'center'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6
           }}>
-            ⚠️ {error}
+            <AlertIcon size={16} /> {error}
           </div>
         )}
 
@@ -114,9 +118,12 @@ export default function ClaimAccountPage() {
             color: 'var(--success-500)',
             fontSize: 13,
             marginBottom: 20,
-            textAlign: 'center'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6
           }}>
-            🎉 {successMsg}
+            <CheckIcon size={16} /> {successMsg}
           </div>
         )}
 
@@ -209,15 +216,15 @@ export default function ClaimAccountPage() {
               {loading ? 'Activating...' : 'Activate My Account'}
             </button>
 
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ width: '100%', marginTop: 4 }}
-              onClick={() => { setStep(1); setError(''); }}
-              disabled={loading || !!successMsg}
-            >
-              ← Go Back
-            </button>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                style={{ width: '100%', marginTop: 4, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                onClick={() => { setStep(1); setError(''); }}
+                disabled={loading || !!successMsg}
+              >
+                <ArrowLeftIcon size={14} /> Go Back
+              </button>
           </form>
         )}
 

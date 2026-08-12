@@ -1,5 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api/client';
+import {
+  BuildingIcon,
+  HostelsIcon,
+  CheckIcon,
+  ClockIcon,
+  AlertIcon
+} from '../components/Icons';
 
 interface CoursePrereq {
   id: string;
@@ -225,14 +232,14 @@ export default function Courses() {
       </div>
 
       {errorMsg && (
-        <div style={{ padding: 14, background: 'rgba(239,68,68,0.08)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-400)', fontSize: 13, marginBottom: 20 }}>
-          ⚠️ {errorMsg}
+        <div style={{ padding: 14, background: 'rgba(239,68,68,0.08)', border: '1px solid var(--danger-500)', borderRadius: 'var(--radius-md)', color: 'var(--danger-400)', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <AlertIcon size={16} /> {errorMsg}
         </div>
       )}
 
       {successMsg && (
-        <div style={{ padding: 14, background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-400)', fontSize: 13, marginBottom: 20 }}>
-          🎉 {successMsg}
+        <div style={{ padding: 14, background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-400)', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <CheckIcon size={16} /> {successMsg}
         </div>
       )}
 
@@ -240,9 +247,12 @@ export default function Courses() {
       {hostelStatus === 'NONE' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Informative Warning */}
-          <div className="section-card" style={{ margin: 0, padding: 20, background: 'rgba(212,160,23,0.05)', border: '1px solid var(--accent-500)' }}>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: 15, fontWeight: 700, color: 'var(--accent-400)' }}>🏡 Step 1: Accommodation Selection Required</h4>
-            <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+          <div className="section-card" style={{ margin: 0, padding: 20, background: '#FEFCE8', border: '1px solid #FDE047' }}>
+            <h4 style={{ margin: '0 0 8px 0', fontSize: 15, fontWeight: 700, color: '#854D0E', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <HostelsIcon size={18} color="#854D0E" />
+              <span>Step 1: Accommodation Selection Required</span>
+            </h4>
+            <p style={{ margin: 0, fontSize: 13, color: '#713F12', lineHeight: 1.5 }}>
               Shanahan University policies require all students to register their hostel block or secure off-campus clearance before selecting courses. Please select an available block or fill the off-campus specification form below.
             </p>
           </div>
@@ -251,15 +261,19 @@ export default function Courses() {
           <div style={{ display: 'flex', gap: 12, borderBottom: '1px solid var(--border-default)', paddingBottom: 12 }}>
             <button 
               className={`btn ${accommodationTab === 'ON_CAMPUS' ? 'btn-primary' : 'btn-ghost'}`} 
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
               onClick={() => setAccommodationTab('ON_CAMPUS')}
             >
-              🏨 On-Campus Hostels
+              <BuildingIcon size={16} />
+              <span>On-Campus Hostels</span>
             </button>
             <button 
               className={`btn ${accommodationTab === 'OFF_CAMPUS' ? 'btn-primary' : 'btn-ghost'}`} 
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
               onClick={() => setAccommodationTab('OFF_CAMPUS')}
             >
-              🏡 Off-Campus Accommodation
+              <HostelsIcon size={16} />
+              <span>Off-Campus Accommodation</span>
             </button>
           </div>
 
@@ -268,7 +282,7 @@ export default function Courses() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
               {hostels.length === 0 ? (
                 <div className="empty-state" style={{ gridColumn: 'span 3' }}>
-                  <div className="empty-state-icon">🏨</div>
+                  <div className="empty-state-icon"><BuildingIcon size={48} color="#800020" /></div>
                   <div className="empty-state-title">No hostels available</div>
                   <div className="empty-state-desc">There are no vacant residential blocks configured for your gender/level.</div>
                 </div>
@@ -280,7 +294,9 @@ export default function Courses() {
                   return (
                     <div key={hostel.id} className="glass-card" style={{ padding: '24px 28px', border: '1px solid var(--border-default)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                        <div style={{ fontSize: 28 }}>🏨</div>
+                        <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(128,0,32,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <BuildingIcon size={22} color="#800020" />
+                        </div>
                         <span className={`badge badge-${hostel.gender === 'MALE' ? 'info' : 'danger'}`}>
                           {hostel.gender === 'MALE' ? 'Male Block' : 'Female Block'}
                         </span>
@@ -385,8 +401,10 @@ export default function Courses() {
       ) : regStatus !== 'NOT_REGISTERED' ? (
         /* Render Already Registered Receipt Status */
         <div className="section-card" style={{ textAlign: 'center', padding: '40px 24px' }}>
-          <div style={{ fontSize: 54, marginBottom: 16 }}>
-            {regStatus === 'APPROVED' ? '✅' : '⏳'}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+            {regStatus === 'APPROVED'
+              ? <CheckIcon size={54} color="var(--success-500)" />
+              : <ClockIcon size={54} color="#B8860B" />}
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>
             {regStatus === 'APPROVED' ? 'Registration Approved!' : 'Registration Pending Approval'}
@@ -487,8 +505,8 @@ export default function Courses() {
                                 <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>None</span>
                               )}
                               {(isPrereqFailed || isPrereqMissing) && (
-                                <div style={{ color: 'var(--danger-400)', fontSize: 11, marginTop: 4, fontWeight: 700 }}>
-                                  ⚠️ {c.enrollmentReason}
+                                <div style={{ color: 'var(--danger-400)', fontSize: 11, marginTop: 4, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <AlertIcon size={12} color="var(--danger-400)" /> {c.enrollmentReason}
                                 </div>
                               )}
                             </td>
@@ -574,8 +592,8 @@ export default function Courses() {
                                 <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>None</span>
                               )}
                               {isDisabled && (
-                                <div style={{ color: 'var(--danger-400)', fontSize: 11, marginTop: 4, fontWeight: 700 }}>
-                                  ⚠️ {c.enrollmentReason}
+                                <div style={{ color: 'var(--danger-400)', fontSize: 11, marginTop: 4, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <AlertIcon size={12} color="var(--danger-400)" /> {c.enrollmentReason}
                                 </div>
                               )}
                             </td>
@@ -628,7 +646,7 @@ export default function Courses() {
               <div className="divider" style={{ margin: '8px 0' }} />
 
               <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                <span>🏨</span>
+                <HostelsIcon size={15} color="var(--text-secondary)" style={{ flexShrink: 0, marginTop: 2 }} />
                 <div>
                   <strong>Housing preference specified:</strong>
                   <div style={{ color: 'var(--success-400)', marginTop: 2, fontWeight: 700 }}>
@@ -637,8 +655,9 @@ export default function Courses() {
                 </div>
               </div>
 
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                💡 Enforce Payment Rule: Submission requires you to have cleared at least 50% of your tuition fees for this semester.
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+                <AlertIcon size={13} color="var(--text-muted)" style={{ flexShrink: 0, marginTop: 1 }} />
+                <span>Enforce Payment Rule: Submission requires you to have cleared at least 50% of your tuition fees for this semester.</span>
               </div>
 
               <button
