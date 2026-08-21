@@ -10,6 +10,11 @@ import Hostels from './pages/Hostels';
 import Results from './pages/Results';
 import ProfilePage from './pages/ProfilePage';
 
+function RootRedirect() {
+  const token = localStorage.getItem('umis_token');
+  return <Navigate to={token ? "/dashboard" : "/login"} replace />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -30,8 +35,8 @@ export default function App() {
           </Route>
 
           {/* Fallbacks */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="*" element={<RootRedirect />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
