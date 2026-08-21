@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/SHANAHAN-UNI-LOGO.png';
 import { AlertIcon } from '../components/Icons';
@@ -12,6 +13,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Forgot Password State
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSubmitting, setForgotSubmitting] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +38,21 @@ export default function LoginPage() {
       setError(err.response?.data?.error || 'Invalid credentials. Please verify your details.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    setForgotSubmitting(true);
+    setForgotMessage(null);
+    try {
+      await api.post('/auth/forgot-password', { email: forgotEmail.trim() });
+      setForgotMessage('If an account associated with this email exists, a password reset link has been dispatched to your inbox.');
+    } catch (err: any) {
+      setForgotMessage('If an account associated with this email exists, a password reset link has been dispatched to your inbox.');
+    } finally {
+      setForgotSubmitting(false);
     }
   };
 
@@ -64,10 +86,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label className="form-label">Username / Matric Number</label>
+            <label className="form-label">Username / Matric Number / Email</label>
             <input
               className="form-control"
-              placeholder="e.g. SU/CMP/26/1001"
+              placeholder="e.g. SU/CMP/26/1001 or student@shanahanuni.edu.ng"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={loading}
@@ -76,7 +98,16 @@ export default function LoginPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="form-label">Password</label>
+              <button
+                type="button"
+                onClick={() => { setShowForgotModal(true); setForgotMessage(null); }}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-300)', fontSize: 12, cursor: 'pointer', padding: 0 }}
+              >
+                Forgot Password?
+              </button>
+            </div>
             <input
               type="password"
               className="form-control"
@@ -113,6 +144,47 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="modal-overlay" onClick={() => setShowForgotModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 420 }}>
+            <div className="modal-header">
+              <h3 className="modal-title">Reset Your Password</h3>
+              <button className="modal-close" onClick={() => setShowForgotModal(false)}>✕</button>
+            </div>
+            <form onSubmit={handleForgotSubmit}>
+              <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  Enter your registered institutional email address. We will send a secure password reset link to your inbox.
+                </p>
+                {forgotMessage && (
+                  <div style={{ padding: 12, background: 'rgba(34,197,94,0.1)', border: '1px solid var(--success-500)', borderRadius: 'var(--radius-md)', color: 'var(--success-400)', fontSize: 13 }}>
+                    {forgotMessage}
+                  </div>
+                )}
+                <div className="form-group">
+                  <label className="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="e.g. student@shanahanuni.edu.ng"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-ghost" onClick={() => setShowForgotModal(false)}>Close</button>
+                <button type="submit" className="btn btn-primary" disabled={forgotSubmitting}>
+                  {forgotSubmitting ? 'Sending Link...' : 'Send Reset Link'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

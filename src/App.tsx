@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import ClaimAccountPage from './pages/ClaimAccountPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import Dashboard from './pages/Dashboard';
 import Payments from './pages/Payments';
 import Courses from './pages/Courses';
@@ -23,6 +24,7 @@ export default function App() {
           {/* Public Authentication routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/claim-account" element={<ClaimAccountPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           {/* Protected Student Portal routes */}
           <Route element={<ProtectedRoute />}>
